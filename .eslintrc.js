@@ -5,6 +5,7 @@ module.exports = {
   },
   extends: [
     'airbnb-base',
+    'next',
   ],
   globals: {
     Atomics: 'readonly',
