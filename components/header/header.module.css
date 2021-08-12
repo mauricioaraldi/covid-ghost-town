@@ -1,0 +1,10 @@
+.header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  padding: var(--size-m);
+}
+
+.languageTitle {
+  margin: 0 0 var(--size-s) 0;
+}

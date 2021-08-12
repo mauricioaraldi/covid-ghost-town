@@ -33,6 +33,7 @@
   "devDependencies": {
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-next": "^11.1.0",
-    "jsdom": "^16.7.0"
+    "jsdom": "^16.7.0",
+    "node-fetch": "^2.6.1"
   }
 }
