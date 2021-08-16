@@ -1,14 +1,21 @@
 .container {
-
+  padding: var(--size-m);
 }
 
 .title {
   text-align: center;
 }
 
+.mapContainer {
+  align-items: flex-start;
+  display: flex;
+}
+
+.infoContainer {
+  flex: 1;
+}
+
 .map {
-  display: block;
-  margin: auto;
 }
 
 .citiesList {

@@ -5,6 +5,10 @@
   padding: var(--size-m);
 }
 
+.title {
+  margin: 0;
+}
+
 .languageTitle {
   margin: 0 0 var(--size-s) 0;
 }

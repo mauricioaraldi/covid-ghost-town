@@ -14,7 +14,7 @@ function Header() {
 
   return (
     <header className={styles.header}>
-      <h1>
+      <h1 className={styles.title}>
         <Link href="/">
           <a>{ t('covid_ghost_town') }</a>
         </Link>

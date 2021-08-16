@@ -1,6 +1,7 @@
 export const COLOR = {
-  cities: '#FF0000',
-  inRange: '#FFFF00',
+  cities: '#A1A1A1',
+  inRange: '#FF0000',
+  inRangeHighlight: '#FFFF00',
 };
 
 export const MAX_DETECTION_THRESHOLD = 7;

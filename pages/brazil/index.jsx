@@ -16,15 +16,10 @@ export default function Country() {
   const lonMultiplier = MAP_SIZE.height / MULTIPLIER.lon;
   const [ghostCities, setGhostCities] = useState(new Set());
 
-  const drawMap = () => {
+  const drawMap = (img) => {
     const ctx = canvas.current.getContext('2d');
-    const img = document.createElement('img');
 
-    img.src = "/images/map_brazil.png";
-
-    img.onload = () => {
-      ctx.drawImage(img, 0, 0, MAP_SIZE.width, MAP_SIZE.height);
-    };
+    ctx.drawImage(img, 0, 0, MAP_SIZE.width, MAP_SIZE.height);
   };
 
   const drawCities = () => {
@@ -34,6 +29,11 @@ export default function Country() {
       const lat = Math.abs(POS.lat - city.lat) * latMultiplier;
       const lon = Math.abs(POS.lon - city.lon) * lonMultiplier;
 
+      if (city.inRange) {
+        ctx.fillStyle = COLOR.inRangeHighlight;
+        ctx.fillRect(lon - 2, lat - 2, 4, 4);
+      }
+
       ctx.fillStyle = city.inRange ? COLOR.inRange : COLOR.cities;
       ctx.fillRect(lon - 1, lat - 1, 2, 2);
     });
@@ -41,7 +41,8 @@ export default function Country() {
 
   const canvasMouseMove = (ev) => {
     const { clientX, clientY, target } = ev;
-    const top = clientY - target.offsetTop;
+    const currentScroll = document.documentElement.scrollTop;
+    const top = clientY - target.offsetTop + currentScroll;
     const left = clientX - target.offsetLeft;
     const lat = top / latMultiplier;
     const lon = left / lonMultiplier;
@@ -93,47 +94,56 @@ export default function Country() {
 
   useEffect(() => {
     const ctx = canvas.current.getContext('2d');
+    const img = document.createElement('img');
 
-    setInterval(() => {
-      ctx.clearRect(0, 0, MAP_SIZE.width, MAP_SIZE.height);
+    img.src = "/images/map_brazil.png";
 
-      drawMap();
-      drawCities();
-    }, 50);
+    img.onload = () => {
+      setInterval(() => {
+        ctx.clearRect(0, 0, MAP_SIZE.width, MAP_SIZE.height);
+
+        drawMap(img);
+        drawCities();
+      }, 50);
+    };
   }, []);
 
   return (
     <main className={styles.container}>
       <h2 className={styles.title}>Brazil</h2>
 
-      <p>{ t('placeMouseOverMapForResults') }</p>
+      <div className={styles.mapContainer}>
+        <div className={styles.infoContainer}>
+          <p>{ t('placeMouseOverMapForResults') }</p>
 
-      <p>{ t('citiesWillBeMarked') }. { t('thisMeansGhostTown') }.</p>
+          <p>{ t('citiesWillBeMarked') }. { t('thisMeansGhostTown') }.</p>
 
-      <p>{ t('forReferencesAboutInformation') }</p>
+          <p>{ t('forReferencesAboutInformation') }</p>
 
-      <canvas
-        className={styles.map}
-        ref={canvas}
-        height={MAP_SIZE.height}
-        width={MAP_SIZE.width}
-        onMouseMove={canvasMouseMove}
-      >
-      </canvas>
+          <canvas
+            className={styles.map}
+            ref={canvas}
+            height={MAP_SIZE.height}
+            width={MAP_SIZE.width}
+            onMouseMove={canvasMouseMove}
+          >
+          </canvas>
+        </div>
 
-      <div>
-        <p>{ t('thoseCitiesWouldBeEmpty') }</p>
-        <ul className={styles.citiesList}>
-          {
-            Array.from(ghostCities).map(city => (
-              <li key={city.id}>{city.name} - {city.population} {t('people')}</li>
-            ))
-          }
-        </ul>
-        <p>
-          { t('total') }:
-          { Array.from(ghostCities).reduce((acc, city) => acc + city.population, 0) }
-        </p>
+        <div className={styles.infoContainer}>
+          <p>{ t('thoseCitiesWouldBeEmpty') }</p>
+          <ul className={styles.citiesList}>
+            {
+              Array.from(ghostCities).map(city => (
+                <li key={city.id}>{city.name} - {city.population} {t('people')}</li>
+              ))
+            }
+          </ul>
+          <p>
+            { t('total') }:
+            { Array.from(ghostCities).reduce((acc, city) => acc + city.population, 0) }
+          </p>
+        </div>
       </div>
     </main>
   );
