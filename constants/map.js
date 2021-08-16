@@ -3,4 +3,4 @@ export const COLOR = {
   inRange: '#FFFF00',
 };
 
-export const MAX_DETECTION_THRESHOLD = 2;
+export const MAX_DETECTION_THRESHOLD = 7;

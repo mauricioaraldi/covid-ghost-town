@@ -10,3 +10,7 @@
   display: block;
   margin: auto;
 }
+
+.citiesList {
+  column-count: 3;
+}

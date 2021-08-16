@@ -1,0 +1,9 @@
+{
+  "citiesWillBeMarked": "Cities closer to your mouse will be marked if the sum of their population is below the total COVID deaths in Brazil",
+  "forReferencesAboutInformation": "For more references about information, take a look at the footer of the page",
+  "people": "People",
+  "placeMouseOverMapForResults": "Place the mouse over the map to see the results",
+  "thisMeansGhostTown": "This means that COVID deaths in Brazil could have reduced the population of those cities to zero, making them completely ghost towns",
+  "thoseCitiesWouldBeEmpty": "Those cities would be empty",
+  "total": "Total"
+}
