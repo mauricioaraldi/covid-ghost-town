@@ -3,6 +3,7 @@
 }
 
 .title {
+  margin-top: 0;
   text-align: center;
 }
 
@@ -16,8 +17,20 @@
 }
 
 .map {
+  display: block;
+  margin: auto;
 }
 
 .citiesList {
   column-count: 3;
+  padding: 0;
+}
+
+.citiesList > li {
+  break-inside: avoid-column;
+  margin-bottom: var(--size-s);
+}
+
+.firstParagraph {
+  margin-top: 0;
 }

@@ -5,5 +5,6 @@
   "placeMouseOverMapForResults": "Passe o mouse sobre o mapa para ver os resultados",
   "thisMeansGhostTown": "Isso significa que o número de mortes por COVID no Brasil poderia ter reduzido a população dessas cidades a zero, tornando-as completamente fantasmas",
   "thoseCitiesWouldBeEmpty": "Essas cidades estariam vazias",
-  "total": "Total"
+  "total": "Total",
+  "totalCovidDeaths": "Mortes totais por COVID"
 }

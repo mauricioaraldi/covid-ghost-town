@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useTranslation } from 'next-i18next';
-import Image from 'next/image';
+
+import { styleNumber } from '/utils';
 
 import { COVID_DEATHS, MAP_SIZE, MULTIPLIER, POS } from '/constants/brazil';
 import { COLOR, MAX_DETECTION_THRESHOLD } from '/constants/map';
@@ -15,6 +16,7 @@ export default function Country() {
   const latMultiplier = MAP_SIZE.height / MULTIPLIER.lat;
   const lonMultiplier = MAP_SIZE.height / MULTIPLIER.lon;
   const [ghostCities, setGhostCities] = useState(new Set());
+  const totalPopulation = Array.from(ghostCities).reduce((acc, city) => acc + city.population, 0);
 
   const drawMap = (img) => {
     const ctx = canvas.current.getContext('2d');
@@ -25,7 +27,7 @@ export default function Country() {
   const drawCities = () => {
     const ctx = canvas.current.getContext('2d');
 
-    Object.values(CITIES).forEach(city => {
+    Object.values(CITIES).forEach((city) => {
       const lat = Math.abs(POS.lat - city.lat) * latMultiplier;
       const lon = Math.abs(POS.lon - city.lon) * lonMultiplier;
 
@@ -47,10 +49,10 @@ export default function Country() {
     const lat = top / latMultiplier;
     const lon = left / lonMultiplier;
     const citiesInRange = new Set();
-    let currentRange = MAX_DETECTION_THRESHOLD
+    let currentRange = MAX_DETECTION_THRESHOLD;
     let citiesPopulation = 0;
 
-    Object.values(CITIES).forEach(city => {
+    Object.values(CITIES).forEach((city) => {
       const cityRelativeLat = Math.abs(POS.lat - city.lat);
       const cityRelativeLon = Math.abs(POS.lon - city.lon);
 
@@ -73,7 +75,7 @@ export default function Country() {
 
       currentRange -= 0.3;
 
-      citiesInRange.forEach(city => {
+      citiesInRange.forEach((city) => {
         const cityRelativeLat = Math.abs(POS.lat - city.lat);
         const cityRelativeLon = Math.abs(POS.lon - city.lon);
 
@@ -96,7 +98,7 @@ export default function Country() {
     const ctx = canvas.current.getContext('2d');
     const img = document.createElement('img');
 
-    img.src = "/images/map_brazil.png";
+    img.src = '/images/map_brazil.png';
 
     img.onload = () => {
       setInterval(() => {
@@ -110,15 +112,17 @@ export default function Country() {
 
   return (
     <main className={styles.container}>
-      <h2 className={styles.title}>Brazil</h2>
+      <h2 className={styles.title}>
+        Brazil - {t('totalCovidDeaths')}: {styleNumber(COVID_DEATHS)}
+      </h2>
 
       <div className={styles.mapContainer}>
         <div className={styles.infoContainer}>
-          <p>{ t('placeMouseOverMapForResults') }</p>
+          <p className={styles.firstParagraph}>{t('placeMouseOverMapForResults')}</p>
 
-          <p>{ t('citiesWillBeMarked') }. { t('thisMeansGhostTown') }.</p>
+          <p>{t('citiesWillBeMarked')}. {t('thisMeansGhostTown')}.</p>
 
-          <p>{ t('forReferencesAboutInformation') }</p>
+          <p>{t('forReferencesAboutInformation')}</p>
 
           <canvas
             className={styles.map}
@@ -131,18 +135,17 @@ export default function Country() {
         </div>
 
         <div className={styles.infoContainer}>
-          <p>{ t('thoseCitiesWouldBeEmpty') }</p>
+          <p className={styles.firstParagraph}>{t('thoseCitiesWouldBeEmpty')}</p>
           <ul className={styles.citiesList}>
             {
-              Array.from(ghostCities).map(city => (
-                <li key={city.id}>{city.name} - {city.population} {t('people')}</li>
+              Array.from(ghostCities).map((city) => (
+                <li key={city.id}>
+                  {city.name} - {styleNumber(city.population)} {t('people').toLowerCase()}
+                </li>
               ))
             }
           </ul>
-          <p>
-            { t('total') }:
-            { Array.from(ghostCities).reduce((acc, city) => acc + city.population, 0) }
-          </p>
+          <p>{t('total')}: {styleNumber(totalPopulation)} {t('people').toLowerCase()}</p>
         </div>
       </div>
     </main>
