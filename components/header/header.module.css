@@ -2,7 +2,7 @@
   align-items: center;
   display: flex;
   justify-content: space-between;
-  padding: var(--size-m);
+  padding: var(--size-s);
 }
 
 .title {

@@ -14,17 +14,13 @@ function Header() {
 
   return (
     <header className={styles.header}>
-      <h1 className={styles.title}>
-        <Link href="/">
-          <a>{ t('covid_ghost_town') }</a>
-        </Link>
-      </h1>
+      <h1 className={styles.title}>{ t('covid_ghost_town') }</h1>
 
       <label>
         <p className={styles.languageTitle}>{ t('language') }</p>
 
         <select defaultValue={router.locale} onChange={selectLanguage}>
-          { router.locales.map((locale) => <option key={locale} value={locale}>{locale}</option>) }
+          { router.locales.map((locale) => <option key={locale} value={locale}>{t(locale)}</option>) }
         </select>
       </label>
     </header>

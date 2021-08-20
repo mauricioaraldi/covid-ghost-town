@@ -1,5 +1,6 @@
 .container {
-  padding: var(--size-m);
+  padding: var(--size-s);
+  padding-top: 0;
 }
 
 .title {
@@ -23,14 +24,17 @@
 
 .citiesList {
   column-count: 3;
-  padding: 0;
+  column-gap: var(--size-l);
+  margin: 0;
+  padding: calc(var(--size-m) + var(--size-s));
 }
 
 .citiesList > li {
   break-inside: avoid-column;
-  margin-bottom: var(--size-s);
+  margin-bottom: var(--size-m);
 }
 
-.firstParagraph {
-  margin-top: 0;
+.firstParagraph,
+.total {
+  margin: 0;
 }

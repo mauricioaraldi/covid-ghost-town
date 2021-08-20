@@ -95,25 +95,36 @@ export default function Country() {
   };
 
   useEffect(() => {
+    if (!canvas.current) {
+      return;
+    }
+
     const ctx = canvas.current.getContext('2d');
     const img = document.createElement('img');
+    let ticker = null;
 
     img.src = '/images/map_brazil.png';
 
     img.onload = () => {
-      setInterval(() => {
+      ticker = setInterval(() => {
         ctx.clearRect(0, 0, MAP_SIZE.width, MAP_SIZE.height);
 
         drawMap(img);
         drawCities();
-      }, 50);
+      }, 100);
+    };
+
+    return () => {
+      if (ticker) {
+        clearInterval(ticker);
+      }
     };
   }, []);
 
   return (
     <main className={styles.container}>
       <h2 className={styles.title}>
-        Brazil - {t('totalCovidDeaths')}: {styleNumber(COVID_DEATHS)}
+        {t('brazil')} - {t('totalCovidDeaths')}: {styleNumber(COVID_DEATHS)}
       </h2>
 
       <div className={styles.mapContainer}>
@@ -145,7 +156,7 @@ export default function Country() {
               ))
             }
           </ul>
-          <p>{t('total')}: {styleNumber(totalPopulation)} {t('people').toLowerCase()}</p>
+          <p className={styles.total}>{t('total')}: {styleNumber(totalPopulation)} {t('people').toLowerCase()}</p>
         </div>
       </div>
     </main>
