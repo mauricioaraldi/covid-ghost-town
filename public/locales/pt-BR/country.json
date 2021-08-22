@@ -1,10 +1,13 @@
 {
+  "afterSelectingRegion": "Após selecionar uma região, clique no marcador para removê-lo ou clique em outra região para mudar a seleção.",
   "brazil": "Brasil",
-  "citiesWillBeMarked": "As cidades mais perto do seu mouse serão marcadas se a soma de sua população for menor que o total de mortes de COVID no Brasil",
+  "citiesWillBeMarked": "As cidades mais perto do seu mouse (ou da região selecionada) serão marcadas se a soma de sua população for menor que o total de mortes de COVID no Brasil.",
   "forReferencesAboutInformation": "Para mais referências sobre as informações, olhe o rodapé da página",
+  "mouseForResults": "Passe o mouse sobre o mapa para ver os resultados. Clique para selecionar uma região.",
   "people": "Pessoas",
-  "placeMouseOverMapForResults": "Passe o mouse sobre o mapa para ver os resultados",
-  "thisMeansGhostTown": "Isso significa que o número de mortes por COVID no Brasil poderia ter reduzido a população dessas cidades a zero, tornando-as completamente fantasmas",
+  "search": "Busca",
+  "searchForCity": "Busque uma cidade",
+  "thisMeansGhostTown": "Isso significa que o número de mortes por COVID no Brasil poderia ter reduzido a população dessas cidades a zero, tornando-as completamente fantasmas.",
   "thoseCitiesWouldBeEmpty": "Essas cidades estariam vazias",
   "total": "Total",
   "totalCovidDeaths": "Mortes totais por COVID"

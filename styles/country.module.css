@@ -17,6 +17,11 @@
   flex: 1;
 }
 
+.infoTitleContainer {
+  display: flex;
+  justify-content: space-between;
+}
+
 .map {
   display: block;
   margin: auto;
@@ -35,6 +40,11 @@
 }
 
 .firstParagraph,
+.infoTitle,
 .total {
   margin: 0;
+}
+
+.searchField > span {
+  margin-right: var(--size-s);
 }

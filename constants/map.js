@@ -5,3 +5,13 @@ export const COLOR = {
 };
 
 export const MAX_DETECTION_THRESHOLD = 7;
+
+export const MARKER_SIZE = {
+  height: 45,
+  width: 30,
+};
+
+export const MARKER_LAT_LON_RADIUS = {
+  lat: 2.8,
+  lon: 2,
+};

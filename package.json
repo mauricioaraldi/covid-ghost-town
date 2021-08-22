@@ -25,6 +25,7 @@
   },
   "license": "GPL-3.0-or-later",
   "dependencies": {
+    "debounce": "^1.2.1",
     "next": "11.0.1",
     "next-i18next": "^8.6.0",
     "react": "17.0.2",
