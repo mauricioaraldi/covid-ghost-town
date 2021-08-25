@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 
@@ -8,7 +7,7 @@ function Header() {
   const { t } = useTranslation('header');
   const router = useRouter();
 
-  const selectLanguage = (ev) => {
+  const selectLanguage = ev => {
     router.push(router.basePath, router.basePath, { locale: ev.target.value });
   };
 
@@ -20,7 +19,9 @@ function Header() {
         <p className={styles.languageTitle}>{ t('language') }</p>
 
         <select defaultValue={router.locale} onChange={selectLanguage}>
-          { router.locales.map((locale) => <option key={locale} value={locale}>{t(locale)}</option>) }
+          {
+            router.locales.map(locale => <option key={locale} value={locale}>{t(locale)}</option>)
+          }
         </select>
       </label>
     </header>

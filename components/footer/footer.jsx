@@ -1,12 +1,9 @@
-import Link from 'next/link';
-import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 
 import styles from './footer.module.css';
 
 function Footer(props) {
   const { t } = useTranslation('footer');
-  const router = useRouter();
 
   return (
     <footer className={styles.footer}>
@@ -14,9 +11,10 @@ function Footer(props) {
         <h3>{t('references')}</h3>
 
         <ul>
-          { props.references.map((ref, index) => (
-            <li key={index}>
-              {ref.title}: <a href={ref.link}>{ref.link}</a>
+          { props.references.map(ref => (
+            <li key={ref.title}>
+              <span>{ref.title}:</span>
+              <a href={ref.link} target="_blank" rel="noreferrer">{ref.link}</a>
             </li>
           )) }
         </ul>
@@ -25,21 +23,36 @@ function Footer(props) {
       <div>
         <ul>
           <li>
-            {t('repository')}: <a
-              href="https://github.com/mauricioaraldi/covid-ghost-town">
+            <span>{t('repository')}:</span>
+            <a
+              href="https://github.com/mauricioaraldi/covid-ghost-town"
+              target="_blank"
+              rel="noreferrer"
+            >
               https://github.com/mauricioaraldi/covid-ghost-town
             </a>
           </li>
 
           <li>
-            {t('license')}: <a
-              href="https://github.com/mauricioaraldi/covid-ghost-town/blob/development/LICENSE">
+            <span>{t('license')}:</span>
+            <a
+              href="https://github.com/mauricioaraldi/covid-ghost-town/blob/development/LICENSE"
+              target="_blank"
+              rel="noreferrer"
+            >
               GNU General Public License v3.0
             </a>
           </li>
 
           <li className={styles.author}>
-            {t('by')} <a href="https://github.com/mauricioaraldi">Maurício Luis Comin Araldi</a>
+            <span>{t('by')}</span>
+            <a
+              href="https://github.com/mauricioaraldi"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Maurício Luis Comin Araldi
+            </a>
           </li>
         </ul>
       </div>

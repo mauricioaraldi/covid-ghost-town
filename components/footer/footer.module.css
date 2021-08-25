@@ -29,6 +29,9 @@
 .footer ul > li:last-child {
   margin-bottom: 0;
 }
+.footer ul > li > span {
+  margin-right: var(--size-s);
+}
 
 .author {
   margin-top: var(--size-l);

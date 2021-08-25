@@ -3,20 +3,20 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useTranslation } from 'next-i18next';
 import debounce from 'debounce';
 
-import Footer from '/components/footer/footer';
+import Footer from 'components/footer/footer';
 
-import { styleNumber } from '/utils';
+import { styleNumber } from 'utils';
 
-import { COVID_DEATHS, MAP_SIZE, MULTIPLIER, POS } from '/constants/brazil';
+import { COVID_DEATHS, MAP_SIZE, MULTIPLIER, POS } from 'constants/brazil';
 import {
   COLOR,
   MARKER_LAT_LON_RADIUS,
   MARKER_SIZE,
   MAX_DETECTION_THRESHOLD,
-} from '/constants/map';
-import CITIES from '/data/brazil/data.json';
+} from 'constants/map';
+import CITIES from 'data/brazil/data.json';
 
-import styles from '/styles/country.module.css';
+import styles from 'styles/country.module.css';
 
 export default function Country() {
   const { t } = useTranslation('country');
@@ -46,47 +46,12 @@ export default function Country() {
     },
   ];
 
-  const drawMap = (img) => {
-    const ctx = canvas.current.getContext('2d');
-    ctx.drawImage(img, 0, 0, MAP_SIZE.width, MAP_SIZE.height);
-  };
-
-  const drawMarker = (img, latLon) => {
-    const ctx = canvas.current.getContext('2d');
-    const [lat, lon] = latLon;
-
-    ctx.drawImage(
-      img,
-      (lon * lonMultiplier) - (MARKER_SIZE.width / 2),
-      (lat * latMultiplier) - MARKER_SIZE.height,
-      MARKER_SIZE.width,
-      MARKER_SIZE.height
-    );
-  };
-
-  const drawCities = () => {
-    const ctx = canvas.current.getContext('2d');
-
-    Object.values(CITIES).forEach((city) => {
-      const lat = Math.abs(POS.lat - city.lat) * latMultiplier;
-      const lon = Math.abs(POS.lon - city.lon) * lonMultiplier;
-
-      if (city.inRange) {
-        ctx.fillStyle = COLOR.inRangeHighlight;
-        ctx.fillRect(lon - 2, lat - 2, 4, 4);
-      }
-
-      ctx.fillStyle = city.inRange ? COLOR.inRange : COLOR.cities;
-      ctx.fillRect(lon - 1, lat - 1, 2, 2);
-    });
-  };
-
   const selectLatLon = (lat, lon) => {
     const citiesInRange = new Set();
     let currentRange = MAX_DETECTION_THRESHOLD;
     let citiesPopulation = 0;
 
-    Object.values(CITIES).forEach((city) => {
+    Object.values(CITIES).forEach(city => {
       const cityRelativeLat = Math.abs(POS.lat - city.lat);
       const cityRelativeLon = Math.abs(POS.lon - city.lon);
 
@@ -109,7 +74,7 @@ export default function Country() {
 
       currentRange -= 0.3;
 
-      citiesInRange.forEach((city) => {
+      citiesInRange.forEach(city => {
         const cityRelativeLat = Math.abs(POS.lat - city.lat);
         const cityRelativeLon = Math.abs(POS.lon - city.lon);
 
@@ -128,7 +93,7 @@ export default function Country() {
     setGhostCities(citiesInRange);
   };
 
-  const canvasMouseMove = (ev) => {
+  const canvasMouseMove = ev => {
     if (lockedLatLon) {
       return;
     }
@@ -143,7 +108,7 @@ export default function Country() {
     selectLatLon(lat, lon);
   };
 
-  const canvasClick = (ev) => {
+  const canvasClick = ev => {
     const { clientX, clientY, target } = ev;
     const currentScroll = document.documentElement.scrollTop;
     const top = clientY - target.offsetTop + currentScroll;
@@ -172,8 +137,7 @@ export default function Country() {
       return;
     }
 
-    const city = Object.values(CITIES).find(city =>
-      city.name.toLowerCase().includes(term.toLowerCase()));
+    const city = Object.values(CITIES).find(c => c.name.toLowerCase().includes(term.toLowerCase()));
 
     if (city) {
       const relativeLat = Math.abs(POS.lat - city.lat);
@@ -190,8 +154,43 @@ export default function Country() {
 
   useEffect(() => {
     if (!canvas.current) {
-      return;
+      return null;
     }
+
+    const drawMap = img => {
+      const ctx = canvas.current.getContext('2d');
+      ctx.drawImage(img, 0, 0, MAP_SIZE.width, MAP_SIZE.height);
+    };
+
+    const drawMarker = (img, latLon) => {
+      const ctx = canvas.current.getContext('2d');
+      const [lat, lon] = latLon;
+
+      ctx.drawImage(
+        img,
+        (lon * lonMultiplier) - (MARKER_SIZE.width / 2),
+        (lat * latMultiplier) - MARKER_SIZE.height,
+        MARKER_SIZE.width,
+        MARKER_SIZE.height,
+      );
+    };
+
+    const drawCities = () => {
+      const ctx = canvas.current.getContext('2d');
+
+      Object.values(CITIES).forEach(city => {
+        const lat = Math.abs(POS.lat - city.lat) * latMultiplier;
+        const lon = Math.abs(POS.lon - city.lon) * lonMultiplier;
+
+        if (city.inRange) {
+          ctx.fillStyle = COLOR.inRangeHighlight;
+          ctx.fillRect(lon - 2, lat - 2, 4, 4);
+        }
+
+        ctx.fillStyle = city.inRange ? COLOR.inRange : COLOR.cities;
+        ctx.fillRect(lon - 1, lat - 1, 2, 2);
+      });
+    };
 
     const ctx = canvas.current.getContext('2d');
     const mapImg = document.createElement('img');
@@ -217,13 +216,13 @@ export default function Country() {
         clearInterval(ticker);
       }
     };
-  }, [lockedLatLon]);
+  }, [latMultiplier, lockedLatLon, lonMultiplier]);
 
   return (
     <>
       <main className={styles.container}>
         <h2 className={styles.title}>
-          {t('brazil')} - {t('totalCovidDeaths')}: {styleNumber(COVID_DEATHS)} {t('people').toLowerCase()}
+          {t('brazil')}- {t('totalCovidDeaths')}: {styleNumber(COVID_DEATHS)} {t('people').toLowerCase()}
         </h2>
 
         <div className={styles.mapContainer}>
@@ -245,8 +244,7 @@ export default function Country() {
               width={MAP_SIZE.width}
               onMouseMove={canvasMouseMove}
               onClick={canvasClick}
-            >
-            </canvas>
+            />
           </div>
 
           <div className={styles.infoContainer}>
@@ -260,7 +258,7 @@ export default function Country() {
             </div>
             <ul className={styles.citiesList}>
               {
-                Array.from(ghostCities).map((city) => (
+                Array.from(ghostCities).map(city => (
                   <li key={city.id}>
                     {city.name} - {styleNumber(city.population)} {t('people').toLowerCase()}
                   </li>

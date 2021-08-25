@@ -1,6 +1,6 @@
 {
   "name": "covid-ghost-town",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Impact of covid deaths as ghost cities",
   "homepage": "https://github.com/mauricioaraldi/covid-ghost-town",
   "private": true,
