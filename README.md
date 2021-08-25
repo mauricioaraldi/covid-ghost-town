@@ -1,4 +1,4 @@
-# Covid Ghost Town 0.2.0
+# Covid Ghost Town 0.3.0
 
 A project to show the impact of covid deaths in countries, as ghost cities. The first goal is to use Brazil as an example.
 
