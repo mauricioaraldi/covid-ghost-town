@@ -1,0 +1,60 @@
+.container {
+  min-height: calc(100vh - 199px);
+  padding: var(--size-s);
+  padding-top: 0;
+}
+
+.title {
+  margin-top: 0;
+  text-align: center;
+}
+
+.mapContainer {
+  align-items: flex-start;
+  display: flex;
+}
+
+.infoContainer {
+  flex: 1;
+}
+
+.infoTitleContainer {
+  display: flex;
+  justify-content: space-between;
+}
+
+.map {
+  display: block;
+  margin: auto;
+}
+
+.citiesList {
+  column-count: 3;
+  column-gap: var(--size-l);
+  margin: 0;
+  padding: calc(var(--size-m) + var(--size-s));
+}
+
+.citiesList > li {
+  break-inside: avoid-column;
+  margin-bottom: var(--size-m);
+}
+
+.textHighlight {
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.hyphenSeparator {
+  margin: 0 var(--size-xs);
+}
+
+.firstParagraph,
+.infoTitle,
+.total {
+  margin: 0;
+}
+
+.searchField > span {
+  margin-right: var(--size-s);
+}

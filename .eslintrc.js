@@ -4,7 +4,8 @@ module.exports = {
     es6: true,
   },
   extends: [
-    'airbnb-base',
+    'airbnb',
+    'next/core-web-vitals',
   ],
   globals: {
     Atomics: 'readonly',
@@ -15,9 +16,34 @@ module.exports = {
     ecmaVersion: 2018,
     sourceType: 'module',
   },
+  settings: {
+    'import/resolver': {
+      node: {
+        extensions: ['.js', '.jsx'],
+        paths: ['.'],
+      },
+    },
+    'import/extensions': [
+      '.js',
+      '.jsx',
+    ],
+  },
   rules: {
-    "class-methods-use-this": 0,
-    "no-use-before-define": ["error", { functions: false }],
-    "no-param-reassign": 0,
+    'arrow-parens': ['error', 'as-needed'],
+    'jsx-a11y/anchor-is-valid': 0,
+    'jsx-a11y/control-has-associated-label': 0,
+    'jsx-a11y/label-has-associated-control': ['error', { assert: 'either' }],
+    'max-len': [
+      'error',
+      {
+        code: 100,
+        tabWidth: 2,
+      },
+    ],
+    'no-param-reassign': 0,
+    'no-loop-func': 0,
+    'object-curly-newline': 0,
+    'react/destructuring-assignment': 0,
+    'react/jsx-one-expression-per-line': 0,
   },
 };

@@ -1,0 +1,41 @@
+:root {
+  /** Colors */
+  --color-black: #000000;
+  --color-white: #FFFFFF;
+
+  --color-gray-98: #FAFAFA;
+  --color-gray-20: #333333;
+
+  /** Font sizes */
+  --font-size-s: 16px;
+  --font-size-m: 20px;
+  --font-size-l: 24px;
+
+  /** Sizes */
+  --size-xs: 4px;
+  --size-s: 8px;
+  --size-m: 16px;
+  --size-l: 32px;
+
+  --text-small: 12px;
+  --text-medium: 14px;
+  --text-large: 16px;
+}
+
+html,
+body {
+  background-color: var(--color-gray-98);
+  padding: 0;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  box-sizing: border-box;
+}

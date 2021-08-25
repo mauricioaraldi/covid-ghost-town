@@ -1,0 +1,15 @@
+.header {
+  align-items: center;
+  display: flex;
+  height: 66px;
+  justify-content: space-between;
+  padding: var(--size-s);
+}
+
+.title {
+  margin: 0;
+}
+
+.languageTitle {
+  margin: 0 0 var(--size-s) 0;
+}

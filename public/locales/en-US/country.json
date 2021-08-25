@@ -1,0 +1,19 @@
+{
+  "afterSelectingRegion": "After selecting a region, click on the marker to remove it or click on another region to change the selection.",
+  "blankMap": "Blank map",
+  "brazil": "Brazil",
+  "citiesWillBeMarked": "Cities closer to your mouse (or the selected region) will be marked if the sum of their population is below the total COVID-19 deaths in Brazil.",
+  "deathCount": "Death count",
+  "forReferencesAboutInformation": "For more references about information, take a look at the footer of the page",
+  "goalIsBringAwareness": "The goal of this project is to bring awareness to the number of deaths caused by COVID-19.",
+  "latitudeLongitudeCities": "Latitude and Longitude of cities",
+  "listCitiesPopulation": "List of cities and population",
+  "mouseForResults": "Place the mouse over the map to see the results. Click to select a region.",
+  "people": "People",
+  "search": "Search",
+  "searchForCity": "Search for a city",
+  "thisMeansGhostTown": "This means that COVID-19 deaths in Brazil could have reduced the population of those cities to zero, making them completely ghost towns.",
+  "thoseCitiesWouldBeEmpty": "Those cities would be empty",
+  "total": "Total",
+  "totalCovidDeaths": "Total COVID-19 deaths"
+}
