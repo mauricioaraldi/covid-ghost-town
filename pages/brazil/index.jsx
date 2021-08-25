@@ -163,11 +163,12 @@ export default function Country() {
 
     const highlightIndex = string.toLowerCase().indexOf(highlight.toLowerCase());
     const pre = string.slice(0, highlightIndex);
+    const content = string.slice(highlightIndex, highlightIndex + highlight.length);
     const post = string.slice(highlightIndex + highlight.length);
 
     return (
       <span>
-        {pre}<span className={styles.textHighlight}>{highlight}</span>{post}
+        {pre}<span className={styles.textHighlight}>{content}</span>{post}
       </span>
     );
   };
