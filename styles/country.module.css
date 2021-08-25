@@ -40,6 +40,15 @@
   margin-bottom: var(--size-m);
 }
 
+.textHighlight {
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.hyphenSeparator {
+  margin: 0 var(--size-xs);
+}
+
 .firstParagraph,
 .infoTitle,
 .total {

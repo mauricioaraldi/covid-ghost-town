@@ -25,6 +25,7 @@ export default function Country() {
   const lonMultiplier = MAP_SIZE.height / MULTIPLIER.lon;
   const [ghostCities, setGhostCities] = useState(new Set());
   const [lockedLatLon, setLockedLatLon] = useState(null);
+  const [searchValue, setSearchValue] = useState('');
   const totalPopulation = Array.from(ghostCities).reduce((acc, city) => acc + city.population, 0);
 
   const references = [
@@ -34,6 +35,7 @@ export default function Country() {
     },
     {
       title: t('listCitiesPopulation'),
+      // eslint-disable-next-line max-len
       link: 'https://pt.wikipedia.org/wiki/Lista_de_munic%C3%ADpios_do_Brasil_por_popula%C3%A7%C3%A3o_(2020)',
     },
     {
@@ -137,6 +139,8 @@ export default function Country() {
       return;
     }
 
+    setSearchValue(term);
+
     const city = Object.values(CITIES).find(c => c.name.toLowerCase().includes(term.toLowerCase()));
 
     if (city) {
@@ -150,6 +154,22 @@ export default function Country() {
 
   const onKeyUpSearch = ev => {
     debounceSearch(ev.target.value);
+  };
+
+  const htmlHighlightString = (string, highlight) => {
+    if (!string || !highlight || !string.toLowerCase().includes(highlight.toLowerCase())) {
+      return string;
+    }
+
+    const highlightIndex = string.toLowerCase().indexOf(highlight.toLowerCase());
+    const pre = string.slice(0, highlightIndex);
+    const post = string.slice(highlightIndex + highlight.length);
+
+    return (
+      <span>
+        {pre}<span className={styles.textHighlight}>{highlight}</span>{post}
+      </span>
+    );
   };
 
   useEffect(() => {
@@ -222,7 +242,8 @@ export default function Country() {
     <>
       <main className={styles.container}>
         <h2 className={styles.title}>
-          {t('brazil')}- {t('totalCovidDeaths')}: {styleNumber(COVID_DEATHS)} {t('people').toLowerCase()}
+          {t('brazil')} - {t('totalCovidDeaths')}:
+          {styleNumber(COVID_DEATHS)} {t('people').toLowerCase()}
         </h2>
 
         <div className={styles.mapContainer}>
@@ -253,19 +274,34 @@ export default function Country() {
 
               <label className={styles.searchField}>
                 <span>{t('search')}</span>
-                <input onKeyUp={onKeyUpSearch} type="search" placeholder={t('searchForCity')} />
+                <input
+                  onKeyUp={onKeyUpSearch}
+                  type="search"
+                  placeholder={t('searchForCity')}
+                  list="citiesDatalist"
+                />
+
+                <datalist id="citiesDatalist">
+                  {
+                    Object.values(CITIES).map(city => <option value={city.name} key={city.name} />)
+                  }
+                </datalist>
               </label>
             </div>
             <ul className={styles.citiesList}>
               {
                 Array.from(ghostCities).map(city => (
                   <li key={city.id}>
-                    {city.name} - {styleNumber(city.population)} {t('people').toLowerCase()}
+                    {htmlHighlightString(city.name, searchValue)}
+                    <span className={styles.hyphenSeparator}>-</span>
+                    {styleNumber(city.population)} {t('people').toLowerCase()}
                   </li>
                 ))
               }
             </ul>
-            <p className={styles.total}>{t('total')}: {styleNumber(totalPopulation)} {t('people').toLowerCase()}</p>
+            <p className={styles.total}>
+              {t('total')}: {styleNumber(totalPopulation)} {t('people').toLowerCase()}
+            </p>
           </div>
         </div>
       </main>
