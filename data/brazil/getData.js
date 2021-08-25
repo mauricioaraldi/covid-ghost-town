@@ -13,7 +13,7 @@ fetch(WIKIPEDIA_URL)
     const table = DOM.window.document.querySelector('table.wikitable');
     const tableRows = Array.from(table.querySelectorAll('tr')).slice(1);
 
-    const cities = tableRows.map(tableRow => {
+    return tableRows.map(tableRow => {
       const columns = Array.from(tableRow.querySelectorAll('td'));
       const info = columns.slice(1).map(column => column.textContent.replace('\n', ''));
 
@@ -24,8 +24,6 @@ fetch(WIKIPEDIA_URL)
         population: parseInt(info[3].replace(/\D/g, ''), 10),
       };
     });
-
-    return cities
   })
   .then(cities => {
     const citiesObj = {};

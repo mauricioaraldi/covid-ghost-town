@@ -177,13 +177,16 @@ export default function Country() {
       return null;
     }
 
+    const ctx = canvas.current.getContext('2d');
+    const mapImg = document.createElement('img');
+    const markerImg = document.createElement('img');
+    let ticker = null;
+
     const drawMap = img => {
-      const ctx = canvas.current.getContext('2d');
       ctx.drawImage(img, 0, 0, MAP_SIZE.width, MAP_SIZE.height);
     };
 
     const drawMarker = (img, latLon) => {
-      const ctx = canvas.current.getContext('2d');
       const [lat, lon] = latLon;
 
       ctx.drawImage(
@@ -196,8 +199,6 @@ export default function Country() {
     };
 
     const drawCities = () => {
-      const ctx = canvas.current.getContext('2d');
-
       Object.values(CITIES).forEach(city => {
         const lat = Math.abs(POS.lat - city.lat) * latMultiplier;
         const lon = Math.abs(POS.lon - city.lon) * lonMultiplier;
@@ -211,11 +212,6 @@ export default function Country() {
         ctx.fillRect(lon - 1, lat - 1, 2, 2);
       });
     };
-
-    const ctx = canvas.current.getContext('2d');
-    const mapImg = document.createElement('img');
-    const markerImg = document.createElement('img');
-    let ticker = null;
 
     mapImg.src = '/images/map_brazil.png';
     markerImg.src = '/images/marker.png';
