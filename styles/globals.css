@@ -4,6 +4,7 @@
   --color-white: #FFFFFF;
 
   --color-gray-98: #FAFAFA;
+  --color-gray-20: #333333;
 
   /** Font sizes */
   --font-size-s: 16px;
@@ -14,6 +15,10 @@
   --size-s: 8px;
   --size-m: 16px;
   --size-l: 32px;
+
+  --text-small: 12px;
+  --text-medium: 14px;
+  --text-large: 16px;
 }
 
 html,

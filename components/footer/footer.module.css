@@ -1,0 +1,35 @@
+.footer {
+  background-color: var(--color-gray-20);
+  color: var(--color-gray-98);
+  display: grid;
+  font-size: var(--text-small);
+  grid-gap: var(--size-s);
+  grid-template-columns: 1fr 1fr;
+  height: 133px;
+  padding: var(--size-s);
+  width: 100%;
+}
+
+.footer a {
+  text-decoration: underline;
+}
+
+.footer h3 {
+  margin: 0;
+}
+
+.footer ul {
+  list-style-type: none;
+  margin: var(--size-m) 0 0 0;
+  padding: 0;
+}
+.footer ul > li {
+  margin-bottom: var(--size-s);
+}
+.footer ul > li:last-child {
+  margin-bottom: 0;
+}
+
+.author {
+  margin-top: var(--size-l);
+}

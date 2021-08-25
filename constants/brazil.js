@@ -13,4 +13,4 @@ export const MULTIPLIER = {
   lon: 40.3,
 };
 
-export const COVID_DEATHS = 569000;
+export const COVID_DEATHS = 575829;
