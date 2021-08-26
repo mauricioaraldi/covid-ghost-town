@@ -7,7 +7,7 @@ import Footer from 'components/footer/footer';
 
 import { styleNumber } from 'utils';
 
-import { COVID_DEATHS, MAP_SIZE, MULTIPLIER, POS } from 'constants/brazil';
+import { COVID_DEATHS, MAP_CONFIG, MULTIPLIER, POS } from 'constants/brazil';
 import {
   COLOR,
   MARKER_LAT_LON_RADIUS,
@@ -21,8 +21,9 @@ import styles from 'styles/country.module.css';
 export default function Country() {
   const { t } = useTranslation('country');
   const canvas = useRef();
-  const latMultiplier = MAP_SIZE.height / MULTIPLIER.lat;
-  const lonMultiplier = MAP_SIZE.height / MULTIPLIER.lon;
+  const mapConfig = MAP_CONFIG.small;
+  const latMultiplier = mapConfig.height / mapConfig.latMult;
+  const lonMultiplier = mapConfig.height / mapConfig.lonMult;
   const [ghostCities, setGhostCities] = useState(new Set());
   const [lockedLatLon, setLockedLatLon] = useState(null);
   const [searchValue, setSearchValue] = useState('');
@@ -44,7 +45,7 @@ export default function Country() {
     },
     {
       title: t('blankMap'),
-      link: 'https://pt.wikipedia.org/wiki/Ficheiro:Brazil_states_blank.png',
+      link: 'https://www.pngwing.com/en/free-png-bbpen',
     },
   ];
 
@@ -184,7 +185,7 @@ export default function Country() {
     let ticker = null;
 
     const drawMap = img => {
-      ctx.drawImage(img, 0, 0, MAP_SIZE.width, MAP_SIZE.height);
+      ctx.drawImage(img, 0, 0, mapConfig.width, mapConfig.height);
     };
 
     const drawMarker = (img, latLon) => {
@@ -218,10 +219,10 @@ export default function Country() {
     markerImg.src = '/images/marker.png';
 
     ticker = setInterval(() => {
-      ctx.clearRect(0, 0, MAP_SIZE.width, MAP_SIZE.height);
+      ctx.clearRect(0, 0, mapConfig.width, mapConfig.height);
 
-      drawMap(mapImg);
       drawCities();
+      drawMap(mapImg);
 
       if (lockedLatLon) {
         drawMarker(markerImg, lockedLatLon);
@@ -239,11 +240,12 @@ export default function Country() {
     <>
       <main className={styles.container}>
         <h2 className={styles.title}>
-          {t('brazil')} - {t('totalCovidDeaths')}<span className="textSeparatorR">:</span>
-          {styleNumber(COVID_DEATHS)} {t('people').toLowerCase()}
+          <span>{t('brazil')} - {t('totalCovidDeaths')}</span>
+          <span className="textSeparatorR">:</span>
+          <span>{styleNumber(COVID_DEATHS)} {t('people').toLowerCase()}</span>
         </h2>
 
-        <div className={styles.mapContainer}>
+        <div className={styles.mainContainer}>
           <div className={styles.infoContainer}>
             <p className={styles.firstParagraph}>{t('goalIsBringAwareness')}</p>
 
@@ -258,8 +260,8 @@ export default function Country() {
             <canvas
               className={styles.map}
               ref={canvas}
-              height={MAP_SIZE.height}
-              width={MAP_SIZE.width}
+              height={mapConfig.height}
+              width={mapConfig.width}
               onMouseMove={canvasMouseMove}
               onClick={canvasClick}
             />
@@ -267,7 +269,7 @@ export default function Country() {
 
           <div className={styles.infoContainer}>
             <div className={styles.infoTitleContainer}>
-              <p className={styles.infoTitle}>{t('thoseCitiesWouldBeEmpty')}</p>
+              <h3 className={styles.infoTitle}>{t('thoseCitiesWouldBeEmpty')}</h3>
 
               <label className={styles.searchField}>
                 <span>{t('search')}</span>

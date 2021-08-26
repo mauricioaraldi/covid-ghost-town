@@ -17,11 +17,12 @@
   --size-m: 16px;
   --size-l: 32px;
 
-  --text-s: 12px;
-  --text-m: 14px;
-  --text-l: 16px;
-  --text-xl: 18px;
-  --text-xxl: 20px;
+  --text-xs: 12px;
+  --text-s: 14px;
+  --text-m: 16px;
+  --text-l: 18px;
+  --text-xl: 20px;
+  --text-xxl: 22px;
 
   --breakpoint-xxs: 320px;
   --breakpoint-xs: 375px;

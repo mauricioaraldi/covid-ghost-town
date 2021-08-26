@@ -7,7 +7,7 @@
 }
 
 .title {
-  font-size: var(--text-xl);
+  font-size: var(--text-l);
   margin: 0;
   text-align: center;
 }
@@ -19,23 +19,23 @@
 }
 
 .languageSelector > p {
-  font-size: var(--text-s);
+  font-size: var(--text-xs);
   margin: 0 0 var(--size-s) 0;
 }
 .languageSelector > select {
-  font-size: var(--text-s);
+  font-size: var(--text-xs);
 }
 
 @media only screen and (min-width: 375px) {
   .languageSelector > p,
   .languageSelector > select {
-    font-size: var(--text-m);
+    font-size: var(--text-s);
   }
 }
 
 @media only screen and (min-width: 680px) {
   .title {
-    font-size: var(--text-xxl);
+    font-size: var(--text-xl);
   }
   .title > span,
   .title > span:nth-child(2) {

@@ -1,26 +1,44 @@
 .container {
   min-height: calc(100vh - 199px);
   padding: var(--size-s);
-  padding-top: 0;
+  padding-bottom: var(--size-l);
 }
 
 .title {
+  font-size: var(--text-m);
   margin-top: 0;
   text-align: center;
 }
+.title > span:last-child {
+  display: block;
+}
 
-.mapContainer {
+.mainContainer {
   align-items: flex-start;
   display: flex;
+  flex-direction: column;
 }
 
 .infoContainer {
-  flex: 1;
+  font-size: var(--text-s);
+}
+.infoContainer:first-child {
+  margin-bottom: var(--size-m);
 }
 
 .infoTitleContainer {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column-reverse;
+}
+.infoTitleContainer > h3 {
+  font-size: var(--text-s);
+}
+
+.searchField {
+  margin: var(--size-m) 0 var(--size-l);
+}
+.searchField > span {
+  margin-right: var(--size-s);
 }
 
 .map {
@@ -29,10 +47,8 @@
 }
 
 .citiesList {
-  column-count: 3;
-  column-gap: var(--size-l);
   margin: 0;
-  padding: calc(var(--size-m) + var(--size-s));
+  padding: var(--size-m);
 }
 
 .citiesList > li {
@@ -51,6 +67,9 @@
   margin: 0;
 }
 
-.searchField > span {
-  margin-right: var(--size-s);
+@media only screen and (min-width: 680px) {
+  .citiesList {
+    column-count: 3;
+    column-gap: var(--size-l);
+  }
 }

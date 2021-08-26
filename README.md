@@ -21,4 +21,4 @@ No results are guaranteed. Use this software at your own risk.
 
 - Latitude and Longitude of cities: https://github.com/kelvins/Municipios-Brasileiros
 
-- Blank map: https://pt.wikipedia.org/wiki/Ficheiro:Brazil_states_blank.png
+- Blank map: https://www.pngwing.com/en/free-png-bbpen
