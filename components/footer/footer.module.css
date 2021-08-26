@@ -2,7 +2,7 @@
   background-color: var(--color-gray-20);
   color: var(--color-gray-98);
   display: grid;
-  font-size: var(--text-small);
+  font-size: var(--text-s);
   grid-gap: var(--size-s);
   grid-template-columns: 1fr 1fr;
   height: 133px;

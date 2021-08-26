@@ -17,9 +17,19 @@
   --size-m: 16px;
   --size-l: 32px;
 
-  --text-small: 12px;
-  --text-medium: 14px;
-  --text-large: 16px;
+  --text-s: 12px;
+  --text-m: 14px;
+  --text-l: 16px;
+  --text-xl: 18px;
+  --text-xxl: 20px;
+
+  --breakpoint-xxs: 320px;
+  --breakpoint-xs: 375px;
+  --breakpoint-s: 414px;
+  --breakpoint-m: 680px;
+  --breakpoint-l: 768px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-xxl: 1440px;
 }
 
 html,
@@ -38,4 +48,11 @@ a {
 
 * {
   box-sizing: border-box;
+}
+
+.textSeparator {
+  margin: 0 var(--size-xs);
+}
+.textSeparatorR {
+  margin: 0 var(--size-xs) 0 0;
 }
