@@ -45,8 +45,11 @@
   text-decoration: underline;
 }
 
-.hyphenSeparator {
+.textSeparator {
   margin: 0 var(--size-xs);
+}
+.textSeparatorR {
+  margin: 0 var(--size-xs) 0 0;
 }
 
 .firstParagraph,

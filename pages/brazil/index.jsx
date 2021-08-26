@@ -239,7 +239,7 @@ export default function Country() {
     <>
       <main className={styles.container}>
         <h2 className={styles.title}>
-          {t('brazil')} - {t('totalCovidDeaths')}:
+          {t('brazil')} - {t('totalCovidDeaths')}<span class={styles.textSeparatorR}>:</span>
           {styleNumber(COVID_DEATHS)} {t('people').toLowerCase()}
         </h2>
 
@@ -290,7 +290,7 @@ export default function Country() {
                 Array.from(ghostCities).map(city => (
                   <li key={city.id}>
                     {htmlHighlightString(city.name, searchValue)}
-                    <span className={styles.hyphenSeparator}>-</span>
+                    <span className={styles.textSeparator}>-</span>
                     {styleNumber(city.population)} {t('people').toLowerCase()}
                   </li>
                 ))
