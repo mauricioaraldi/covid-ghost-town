@@ -9,8 +9,8 @@ export const MAP_INITIAL_POS = {
 };
 
 export const MAP_MULTIPLIER = {
-  lat: 39.1,
-  lon: 40.3,
+  lat: 39,
+  lon: 39.4,
 };
 
 export const COVID_DEATHS = 577605;

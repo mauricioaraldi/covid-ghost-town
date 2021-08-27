@@ -144,7 +144,19 @@ export default function Country() {
 
     setSearchValue(term);
 
-    const city = Object.values(CITIES).find(c => c.name.toLowerCase().includes(term.toLowerCase()));
+    const normalizedTerm = term.toLowerCase();
+    const possibleMatches = Object.values(CITIES).filter(c => {
+      const normalizedName = c.name.toLowerCase();
+
+      return normalizedName.includes(normalizedTerm);
+    });
+    const city = possibleMatches.reduce((acc, c) => {
+      if (!acc || c.name.length < acc.name.length) {
+        return c;
+      }
+
+      return acc;
+    }, null);
 
     if (city) {
       const relativeLat = Math.abs(MAP_INITIAL_POS.lat - city.lat);
@@ -155,7 +167,7 @@ export default function Country() {
     }
   }, 300);
 
-  const onKeyUpSearch = ev => {
+  const onSearch = ev => {
     debounceSearch(ev.target.value);
   };
 
@@ -204,16 +216,16 @@ export default function Country() {
 
     const drawCities = () => {
       Object.values(CITIES).forEach(city => {
-        const lat = Math.abs(MAP_INITIAL_POS.lat - city.lat) * mapMultipliers.lat;
-        const lon = Math.abs(MAP_INITIAL_POS.lon - city.lon) * mapMultipliers.lon;
+        const y = Math.abs(MAP_INITIAL_POS.lat - city.lat) * mapMultipliers.lat;
+        const x = Math.abs(MAP_INITIAL_POS.lon - city.lon) * mapMultipliers.lon;
 
         if (city.inRange) {
           ctx.fillStyle = COLOR.inRangeHighlight;
-          ctx.fillRect(lon - 2, lat - 2, 4, 4);
+          ctx.fillRect(x - 2, y - 2, 4, 4);
         }
 
         ctx.fillStyle = city.inRange ? COLOR.inRange : COLOR.cities;
-        ctx.fillRect(lon - 1, lat - 1, 2, 2);
+        ctx.fillRect(x - 1, y - 1, 2, 2);
       });
     };
 
@@ -270,7 +282,7 @@ export default function Country() {
 
             <p>{t('afterSelectingRegion')}</p>
 
-            <p>{t('citiesWillBeMarked')} {t('thisMeansGhostTown')}</p>
+            <p>{t('citiesWillBeMarked')} <span className="bold">{t('thisMeansGhostTown')}</span></p>
 
             <p>{t('forReferencesAboutInformation')}</p>
 
@@ -291,7 +303,8 @@ export default function Country() {
               <label className={styles.searchField}>
                 <span>{t('search')}</span>
                 <input
-                  onKeyUp={onKeyUpSearch}
+                  onKeyUp={onSearch}
+                  onChange={onSearch}
                   type="search"
                   placeholder={t('searchForCity')}
                   list="citiesDatalist"
