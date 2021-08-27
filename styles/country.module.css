@@ -1,38 +1,51 @@
 .container {
-  min-height: calc(100vh - 199px);
   padding: var(--size-s);
-  padding-top: 0;
+  padding-bottom: var(--size-l);
 }
 
 .title {
+  font-size: var(--text-m);
   margin-top: 0;
   text-align: center;
 }
-
-.mapContainer {
-  align-items: flex-start;
-  display: flex;
+.title > span:last-child {
+  display: block;
 }
 
 .infoContainer {
-  flex: 1;
+  font-size: var(--text-s);
+  width: 100%;
+}
+.infoContainer:first-child {
+  margin-bottom: var(--size-m);
 }
 
 .infoTitleContainer {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column-reverse;
+}
+.infoTitleContainer > h3 {
+  font-size: var(--text-s);
+}
+
+.searchField {
+  margin: var(--size-m) 0 var(--size-l);
+}
+.searchField > span {
+  margin-right: var(--size-s);
 }
 
 .map {
   display: block;
   margin: auto;
+  max-height: 620px;
+  max-width: 619px;
+  width: 100%;
 }
 
 .citiesList {
-  column-count: 3;
-  column-gap: var(--size-l);
   margin: 0;
-  padding: calc(var(--size-m) + var(--size-s));
+  padding: var(--size-m);
 }
 
 .citiesList > li {
@@ -45,19 +58,62 @@
   text-decoration: underline;
 }
 
-.textSeparator {
-  margin: 0 var(--size-xs);
-}
-.textSeparatorR {
-  margin: 0 var(--size-xs) 0 0;
-}
-
 .firstParagraph,
 .infoTitle,
 .total {
   margin: 0;
 }
 
-.searchField > span {
-  margin-right: var(--size-s);
+.total {
+  font-weight: bold;
+  text-align: center;
+}
+
+@media only screen and (min-width: 680px) {
+  .title > span:last-child {
+    display: inline;
+  }
+
+  .infoContainer {
+    font-size: var(--text-m);
+  }
+
+  .citiesList {
+    column-count: 2;
+    column-gap: var(--size-l);
+  }
+}
+
+@media only screen and (min-width: 1280px) {
+  .container {
+    min-height: calc(100vh - 282px);
+  }
+}
+
+@media only screen and (min-width: 1440px) {
+  .container {
+    min-height: calc(100vh - 282px);
+    padding-top: 0;
+  }
+
+  .mainContainer {
+    display: grid;
+    grid-gap: var(--size-m);
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .infoTitleContainer {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .searchField {
+    margin: 0;
+  }
+}
+
+@media only screen and (min-width: 1680px) {
+  .citiesList {
+    column-count: 3;
+  }
 }

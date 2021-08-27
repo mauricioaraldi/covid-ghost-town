@@ -7,9 +7,38 @@
 }
 
 .title {
+  font-size: var(--text-l);
   margin: 0;
+  text-align: center;
+}
+.title > span {
+  display: block;
+}
+.title > span:nth-child(2) {
+  display: none;
 }
 
-.languageTitle {
+.languageSelector > p {
+  font-size: var(--text-xs);
   margin: 0 0 var(--size-s) 0;
+}
+.languageSelector > select {
+  font-size: var(--text-xs);
+}
+
+@media only screen and (min-width: 414px) {
+  .languageSelector > p,
+  .languageSelector > select {
+    font-size: var(--text-s);
+  }
+  .title > span,
+  .title > span:nth-child(2) {
+    display: inline-block;
+  }
+}
+
+@media only screen and (min-width: 680px) {
+  .title {
+    font-size: var(--text-xl);
+  }
 }

@@ -1,16 +1,16 @@
 export const MAP_SIZE = {
-  height: 617,
+  height: 601,
   width: 600,
 };
 
-export const POS = {
+export const MAP_INITIAL_POS = {
   lat: 5.251389,
   lon: -73.984444,
 };
 
-export const MULTIPLIER = {
-  lat: 39.1,
-  lon: 40.3,
+export const MAP_MULTIPLIER = {
+  lat: 39,
+  lon: 39.4,
 };
 
-export const COVID_DEATHS = 575829;
+export const COVID_DEATHS = 577605;

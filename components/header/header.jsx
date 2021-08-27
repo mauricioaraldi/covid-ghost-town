@@ -13,10 +13,14 @@ function Header() {
 
   return (
     <header className={styles.header}>
-      <h1 className={styles.title}>{ t('covid_ghost_town') }</h1>
+      <h1 className={styles.title}>
+        <span>{ t('covid') }</span>
+        <span className="textSeparator">-</span>
+        <span>{ t('ghostTown') }</span>
+      </h1>
 
-      <label>
-        <p className={styles.languageTitle}>{ t('language') }</p>
+      <label className={styles.languageSelector}>
+        <p>{ t('language') }</p>
 
         <select defaultValue={router.locale} onChange={selectLanguage}>
           {

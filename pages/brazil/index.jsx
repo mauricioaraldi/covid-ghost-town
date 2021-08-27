@@ -7,7 +7,7 @@ import Footer from 'components/footer/footer';
 
 import { styleNumber } from 'utils';
 
-import { COVID_DEATHS, MAP_SIZE, MULTIPLIER, POS } from 'constants/brazil';
+import { COVID_DEATHS, MAP_INITIAL_POS, MAP_MULTIPLIER, MAP_SIZE } from 'constants/brazil';
 import {
   COLOR,
   MARKER_LAT_LON_RADIUS,
@@ -21,8 +21,14 @@ import styles from 'styles/country.module.css';
 export default function Country() {
   const { t } = useTranslation('country');
   const canvas = useRef();
-  const latMultiplier = MAP_SIZE.height / MULTIPLIER.lat;
-  const lonMultiplier = MAP_SIZE.height / MULTIPLIER.lon;
+  const [mapMultipliers] = useState({
+    lat: MAP_SIZE.height / MAP_MULTIPLIER.lat,
+    lon: MAP_SIZE.width / MAP_MULTIPLIER.lon,
+  });
+  const [screenMultipliers, setScreenMultipliers] = useState({
+    lat: mapMultipliers.lat,
+    lon: mapMultipliers.lon,
+  });
   const [ghostCities, setGhostCities] = useState(new Set());
   const [lockedLatLon, setLockedLatLon] = useState(null);
   const [searchValue, setSearchValue] = useState('');
@@ -44,7 +50,7 @@ export default function Country() {
     },
     {
       title: t('blankMap'),
-      link: 'https://pt.wikipedia.org/wiki/Ficheiro:Brazil_states_blank.png',
+      link: 'https://www.pngwing.com/en/free-png-bbpen',
     },
   ];
 
@@ -54,8 +60,8 @@ export default function Country() {
     let citiesPopulation = 0;
 
     Object.values(CITIES).forEach(city => {
-      const cityRelativeLat = Math.abs(POS.lat - city.lat);
-      const cityRelativeLon = Math.abs(POS.lon - city.lon);
+      const cityRelativeLat = Math.abs(MAP_INITIAL_POS.lat - city.lat);
+      const cityRelativeLon = Math.abs(MAP_INITIAL_POS.lon - city.lon);
 
       if (cityRelativeLat > lat - currentRange
           && cityRelativeLat < lat + currentRange
@@ -77,8 +83,8 @@ export default function Country() {
       currentRange -= 0.3;
 
       citiesInRange.forEach(city => {
-        const cityRelativeLat = Math.abs(POS.lat - city.lat);
-        const cityRelativeLon = Math.abs(POS.lon - city.lon);
+        const cityRelativeLat = Math.abs(MAP_INITIAL_POS.lat - city.lat);
+        const cityRelativeLon = Math.abs(MAP_INITIAL_POS.lon - city.lon);
 
         if (cityRelativeLat > lat - currentRange
             && cityRelativeLat < lat + currentRange
@@ -104,8 +110,8 @@ export default function Country() {
     const currentScroll = document.documentElement.scrollTop;
     const top = clientY - target.offsetTop + currentScroll;
     const left = clientX - target.offsetLeft;
-    const lat = top / latMultiplier;
-    const lon = left / lonMultiplier;
+    const lat = top / screenMultipliers.lat;
+    const lon = left / screenMultipliers.lon;
 
     selectLatLon(lat, lon);
   };
@@ -115,8 +121,8 @@ export default function Country() {
     const currentScroll = document.documentElement.scrollTop;
     const top = clientY - target.offsetTop + currentScroll;
     const left = clientX - target.offsetLeft;
-    const lat = top / latMultiplier;
-    const lon = left / lonMultiplier;
+    const lat = top / screenMultipliers.lat;
+    const lon = left / screenMultipliers.lon;
 
     if (lockedLatLon) {
       const [lockedLat, lockedLon] = lockedLatLon;
@@ -141,18 +147,30 @@ export default function Country() {
 
     setSearchValue(term);
 
-    const city = Object.values(CITIES).find(c => c.name.toLowerCase().includes(term.toLowerCase()));
+    const normalizedTerm = term.toLowerCase();
+    const possibleMatches = Object.values(CITIES).filter(c => {
+      const normalizedName = c.name.toLowerCase();
+
+      return normalizedName.includes(normalizedTerm);
+    });
+    const city = possibleMatches.reduce((acc, c) => {
+      if (!acc || c.name.length < acc.name.length) {
+        return c;
+      }
+
+      return acc;
+    }, null);
 
     if (city) {
-      const relativeLat = Math.abs(POS.lat - city.lat);
-      const relativeLon = Math.abs(POS.lon - city.lon);
+      const relativeLat = Math.abs(MAP_INITIAL_POS.lat - city.lat);
+      const relativeLon = Math.abs(MAP_INITIAL_POS.lon - city.lon);
 
       selectLatLon(relativeLat, relativeLon);
       setLockedLatLon([relativeLat, relativeLon]);
     }
   }, 300);
 
-  const onKeyUpSearch = ev => {
+  const onSearch = ev => {
     debounceSearch(ev.target.value);
   };
 
@@ -192,8 +210,8 @@ export default function Country() {
 
       ctx.drawImage(
         img,
-        (lon * lonMultiplier) - (MARKER_SIZE.width / 2),
-        (lat * latMultiplier) - MARKER_SIZE.height,
+        (lon * mapMultipliers.lon) - (MARKER_SIZE.width / 2),
+        (lat * mapMultipliers.lat) - MARKER_SIZE.height,
         MARKER_SIZE.width,
         MARKER_SIZE.height,
       );
@@ -201,16 +219,16 @@ export default function Country() {
 
     const drawCities = () => {
       Object.values(CITIES).forEach(city => {
-        const lat = Math.abs(POS.lat - city.lat) * latMultiplier;
-        const lon = Math.abs(POS.lon - city.lon) * lonMultiplier;
+        const y = Math.abs(MAP_INITIAL_POS.lat - city.lat) * mapMultipliers.lat;
+        const x = Math.abs(MAP_INITIAL_POS.lon - city.lon) * mapMultipliers.lon;
 
         if (city.inRange) {
           ctx.fillStyle = COLOR.inRangeHighlight;
-          ctx.fillRect(lon - 2, lat - 2, 4, 4);
+          ctx.fillRect(x - 2, y - 2, 4, 4);
         }
 
         ctx.fillStyle = city.inRange ? COLOR.inRange : COLOR.cities;
-        ctx.fillRect(lon - 1, lat - 1, 2, 2);
+        ctx.fillRect(x - 1, y - 1, 2, 2);
       });
     };
 
@@ -220,8 +238,8 @@ export default function Country() {
     ticker = setInterval(() => {
       ctx.clearRect(0, 0, MAP_SIZE.width, MAP_SIZE.height);
 
-      drawMap(mapImg);
       drawCities();
+      drawMap(mapImg);
 
       if (lockedLatLon) {
         drawMarker(markerImg, lockedLatLon);
@@ -233,17 +251,35 @@ export default function Country() {
         clearInterval(ticker);
       }
     };
-  }, [latMultiplier, lockedLatLon, lonMultiplier]);
+  }, [lockedLatLon, mapMultipliers]);
+
+  useEffect(() => {
+    if (!canvas.current) {
+      return null;
+    }
+
+    const newMultipliers = {
+      lat: canvas.current.clientHeight / MAP_MULTIPLIER.lat,
+      lon: canvas.current.clientWidth / MAP_MULTIPLIER.lon,
+    };
+
+    if (newMultipliers.lat !== screenMultipliers.lat) {
+      setScreenMultipliers(newMultipliers);
+    }
+
+    return null;
+  }, [canvas, screenMultipliers]);
 
   return (
     <>
       <main className={styles.container}>
         <h2 className={styles.title}>
-          {t('brazil')} - {t('totalCovidDeaths')}<span class={styles.textSeparatorR}>:</span>
-          {styleNumber(COVID_DEATHS)} {t('people').toLowerCase()}
+          <span>{t('brazil')} - {t('totalCovidDeaths')}</span>
+          <span className="textSeparatorR">:</span>
+          <span>{styleNumber(COVID_DEATHS)} {t('people').toLowerCase()}</span>
         </h2>
 
-        <div className={styles.mapContainer}>
+        <div className={styles.mainContainer}>
           <div className={styles.infoContainer}>
             <p className={styles.firstParagraph}>{t('goalIsBringAwareness')}</p>
 
@@ -251,7 +287,7 @@ export default function Country() {
 
             <p>{t('afterSelectingRegion')}</p>
 
-            <p>{t('citiesWillBeMarked')} {t('thisMeansGhostTown')}</p>
+            <p>{t('citiesWillBeMarked')} <span className="bold">{t('thisMeansGhostTown')}</span></p>
 
             <p>{t('forReferencesAboutInformation')}</p>
 
@@ -267,12 +303,13 @@ export default function Country() {
 
           <div className={styles.infoContainer}>
             <div className={styles.infoTitleContainer}>
-              <p className={styles.infoTitle}>{t('thoseCitiesWouldBeEmpty')}</p>
+              <h3 className={styles.infoTitle}>{t('thoseCitiesWouldBeEmpty')}</h3>
 
               <label className={styles.searchField}>
                 <span>{t('search')}</span>
                 <input
-                  onKeyUp={onKeyUpSearch}
+                  onKeyUp={onSearch}
+                  onChange={onSearch}
                   type="search"
                   placeholder={t('searchForCity')}
                   list="citiesDatalist"
@@ -280,7 +317,7 @@ export default function Country() {
 
                 <datalist id="citiesDatalist">
                   {
-                    Object.values(CITIES).map(city => <option value={city.name} key={city.name} />)
+                    Object.values(CITIES).map(city => <option value={city.name} key={city.id} />)
                   }
                 </datalist>
               </label>
@@ -290,7 +327,7 @@ export default function Country() {
                 Array.from(ghostCities).map(city => (
                   <li key={city.id}>
                     {htmlHighlightString(city.name, searchValue)}
-                    <span className={styles.textSeparator}>-</span>
+                    <span className="textSeparator">-</span>
                     {styleNumber(city.population)} {t('people').toLowerCase()}
                   </li>
                 ))
