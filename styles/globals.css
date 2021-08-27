@@ -24,13 +24,12 @@
   --text-xl: 20px;
   --text-xxl: 22px;
 
-  --breakpoint-xxs: 320px;
-  --breakpoint-xs: 375px;
+  --breakpoint-xs: 320px;
   --breakpoint-s: 414px;
   --breakpoint-m: 680px;
-  --breakpoint-l: 768px;
-  --breakpoint-xl: 1280px;
-  --breakpoint-xxl: 1440px;
+  --breakpoint-l: 1280px;
+  --breakpoint-xl: 1440px;
+  --breakpoint-xxl: 1680px;
 }
 
 html,

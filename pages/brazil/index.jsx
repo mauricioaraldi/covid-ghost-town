@@ -7,7 +7,7 @@ import Footer from 'components/footer/footer';
 
 import { styleNumber } from 'utils';
 
-import { COVID_DEATHS, MAP_CONFIG, MULTIPLIER, POS } from 'constants/brazil';
+import { COVID_DEATHS, MAP_INITIAL_POS, MAP_MULTIPLIER, MAP_SIZE } from 'constants/brazil';
 import {
   COLOR,
   MARKER_LAT_LON_RADIUS,
@@ -21,9 +21,11 @@ import styles from 'styles/country.module.css';
 export default function Country() {
   const { t } = useTranslation('country');
   const canvas = useRef();
-  const mapConfig = MAP_CONFIG.small;
-  const latMultiplier = mapConfig.height / mapConfig.latMult;
-  const lonMultiplier = mapConfig.height / mapConfig.lonMult;
+  const mapMultipliers = {
+    lat: MAP_SIZE.height / MAP_MULTIPLIER.lat,
+    lon: MAP_SIZE.width / MAP_MULTIPLIER.lon,
+  };
+  const [screenMultipliers, setScreenMultipliers] = useState({ ...mapMultipliers });
   const [ghostCities, setGhostCities] = useState(new Set());
   const [lockedLatLon, setLockedLatLon] = useState(null);
   const [searchValue, setSearchValue] = useState('');
@@ -55,8 +57,8 @@ export default function Country() {
     let citiesPopulation = 0;
 
     Object.values(CITIES).forEach(city => {
-      const cityRelativeLat = Math.abs(POS.lat - city.lat);
-      const cityRelativeLon = Math.abs(POS.lon - city.lon);
+      const cityRelativeLat = Math.abs(MAP_INITIAL_POS.lat - city.lat);
+      const cityRelativeLon = Math.abs(MAP_INITIAL_POS.lon - city.lon);
 
       if (cityRelativeLat > lat - currentRange
           && cityRelativeLat < lat + currentRange
@@ -78,8 +80,8 @@ export default function Country() {
       currentRange -= 0.3;
 
       citiesInRange.forEach(city => {
-        const cityRelativeLat = Math.abs(POS.lat - city.lat);
-        const cityRelativeLon = Math.abs(POS.lon - city.lon);
+        const cityRelativeLat = Math.abs(MAP_INITIAL_POS.lat - city.lat);
+        const cityRelativeLon = Math.abs(MAP_INITIAL_POS.lon - city.lon);
 
         if (cityRelativeLat > lat - currentRange
             && cityRelativeLat < lat + currentRange
@@ -105,8 +107,8 @@ export default function Country() {
     const currentScroll = document.documentElement.scrollTop;
     const top = clientY - target.offsetTop + currentScroll;
     const left = clientX - target.offsetLeft;
-    const lat = top / latMultiplier;
-    const lon = left / lonMultiplier;
+    const lat = top / screenMultipliers.lat;
+    const lon = left / screenMultipliers.lon;
 
     selectLatLon(lat, lon);
   };
@@ -116,8 +118,8 @@ export default function Country() {
     const currentScroll = document.documentElement.scrollTop;
     const top = clientY - target.offsetTop + currentScroll;
     const left = clientX - target.offsetLeft;
-    const lat = top / latMultiplier;
-    const lon = left / lonMultiplier;
+    const lat = top / screenMultipliers.lat;
+    const lon = left / screenMultipliers.lon;
 
     if (lockedLatLon) {
       const [lockedLat, lockedLon] = lockedLatLon;
@@ -145,8 +147,8 @@ export default function Country() {
     const city = Object.values(CITIES).find(c => c.name.toLowerCase().includes(term.toLowerCase()));
 
     if (city) {
-      const relativeLat = Math.abs(POS.lat - city.lat);
-      const relativeLon = Math.abs(POS.lon - city.lon);
+      const relativeLat = Math.abs(MAP_INITIAL_POS.lat - city.lat);
+      const relativeLon = Math.abs(MAP_INITIAL_POS.lon - city.lon);
 
       selectLatLon(relativeLat, relativeLon);
       setLockedLatLon([relativeLat, relativeLon]);
@@ -185,7 +187,7 @@ export default function Country() {
     let ticker = null;
 
     const drawMap = img => {
-      ctx.drawImage(img, 0, 0, mapConfig.width, mapConfig.height);
+      ctx.drawImage(img, 0, 0, MAP_SIZE.width, MAP_SIZE.height);
     };
 
     const drawMarker = (img, latLon) => {
@@ -193,8 +195,8 @@ export default function Country() {
 
       ctx.drawImage(
         img,
-        (lon * lonMultiplier) - (MARKER_SIZE.width / 2),
-        (lat * latMultiplier) - MARKER_SIZE.height,
+        (lon * mapMultipliers.lon) - (MARKER_SIZE.width / 2),
+        (lat * mapMultipliers.lat) - MARKER_SIZE.height,
         MARKER_SIZE.width,
         MARKER_SIZE.height,
       );
@@ -202,8 +204,8 @@ export default function Country() {
 
     const drawCities = () => {
       Object.values(CITIES).forEach(city => {
-        const lat = Math.abs(POS.lat - city.lat) * latMultiplier;
-        const lon = Math.abs(POS.lon - city.lon) * lonMultiplier;
+        const lat = Math.abs(MAP_INITIAL_POS.lat - city.lat) * mapMultipliers.lat;
+        const lon = Math.abs(MAP_INITIAL_POS.lon - city.lon) * mapMultipliers.lon;
 
         if (city.inRange) {
           ctx.fillStyle = COLOR.inRangeHighlight;
@@ -219,7 +221,7 @@ export default function Country() {
     markerImg.src = '/images/marker.png';
 
     ticker = setInterval(() => {
-      ctx.clearRect(0, 0, mapConfig.width, mapConfig.height);
+      ctx.clearRect(0, 0, MAP_SIZE.width, MAP_SIZE.height);
 
       drawCities();
       drawMap(mapImg);
@@ -234,7 +236,22 @@ export default function Country() {
         clearInterval(ticker);
       }
     };
-  }, [latMultiplier, lockedLatLon, lonMultiplier]);
+  }, [mapMultipliers, lockedLatLon]);
+
+  useEffect(() => {
+    if (!canvas.current) {
+      return null;
+    }
+
+    const newMultipliers = {
+      lat: canvas.current.clientHeight / MAP_MULTIPLIER.lat,
+      lon: canvas.current.clientWidth / MAP_MULTIPLIER.lon,
+    };
+
+    if (newMultipliers.lat !== screenMultipliers.lat) {
+      setScreenMultipliers(newMultipliers);
+    }
+  }, [canvas]);
 
   return (
     <>
@@ -260,8 +277,8 @@ export default function Country() {
             <canvas
               className={styles.map}
               ref={canvas}
-              height={mapConfig.height}
-              width={mapConfig.width}
+              height={MAP_SIZE.height}
+              width={MAP_SIZE.width}
               onMouseMove={canvasMouseMove}
               onClick={canvasClick}
             />
@@ -282,7 +299,7 @@ export default function Country() {
 
                 <datalist id="citiesDatalist">
                   {
-                    Object.values(CITIES).map(city => <option value={city.name} key={city.name} />)
+                    Object.values(CITIES).map(city => <option value={city.name} key={city.id} />)
                   }
                 </datalist>
               </label>

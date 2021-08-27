@@ -26,19 +26,19 @@
   font-size: var(--text-xs);
 }
 
-@media only screen and (min-width: 375px) {
+@media only screen and (min-width: 414px) {
   .languageSelector > p,
   .languageSelector > select {
     font-size: var(--text-s);
+  }
+  .title > span,
+  .title > span:nth-child(2) {
+    display: inline-block;
   }
 }
 
 @media only screen and (min-width: 680px) {
   .title {
     font-size: var(--text-xl);
-  }
-  .title > span,
-  .title > span:nth-child(2) {
-    display: inline-block;
   }
 }
