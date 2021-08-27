@@ -21,11 +21,14 @@ import styles from 'styles/country.module.css';
 export default function Country() {
   const { t } = useTranslation('country');
   const canvas = useRef();
-  const mapMultipliers = {
+  const [mapMultipliers] = useState({
     lat: MAP_SIZE.height / MAP_MULTIPLIER.lat,
     lon: MAP_SIZE.width / MAP_MULTIPLIER.lon,
-  };
-  const [screenMultipliers, setScreenMultipliers] = useState({ ...mapMultipliers });
+  });
+  const [screenMultipliers, setScreenMultipliers] = useState({
+    lat: mapMultipliers.lat,
+    lon: mapMultipliers.lon,
+  });
   const [ghostCities, setGhostCities] = useState(new Set());
   const [lockedLatLon, setLockedLatLon] = useState(null);
   const [searchValue, setSearchValue] = useState('');
@@ -248,7 +251,7 @@ export default function Country() {
         clearInterval(ticker);
       }
     };
-  }, [mapMultipliers, lockedLatLon]);
+  }, [lockedLatLon, mapMultipliers]);
 
   useEffect(() => {
     if (!canvas.current) {
@@ -263,7 +266,9 @@ export default function Country() {
     if (newMultipliers.lat !== screenMultipliers.lat) {
       setScreenMultipliers(newMultipliers);
     }
-  }, [canvas]);
+
+    return null;
+  }, [canvas, screenMultipliers]);
 
   return (
     <>
