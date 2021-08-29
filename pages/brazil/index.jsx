@@ -12,7 +12,7 @@ import {
   COLOR,
   MARKER_LAT_LON_RADIUS,
   MARKER_SIZE,
-  MAX_DETECTION_THRESHOLD,
+  RANGE_INCR_AMOUNT,
 } from 'constants/map';
 import CITIES from 'data/brazil/data.json';
 
@@ -55,47 +55,44 @@ export default function Country() {
   ];
 
   const selectLatLon = (lat, lon) => {
-    const citiesInRange = new Set();
-    let currentRange = MAX_DETECTION_THRESHOLD;
+    let citiesInRange = [];
+    let currentRange = 0;
     let citiesPopulation = 0;
 
-    Object.values(CITIES).forEach(city => {
-      const cityRelativeLat = Math.abs(MAP_INITIAL_POS.lat - city.lat);
-      const cityRelativeLon = Math.abs(MAP_INITIAL_POS.lon - city.lon);
-
-      if (cityRelativeLat > lat - currentRange
-          && cityRelativeLat < lat + currentRange
-          && cityRelativeLon > lon - currentRange
-          && cityRelativeLon < lon + currentRange) {
-        city.inRange = true;
-
-        citiesInRange.add(city);
-
-        citiesPopulation += city.population;
-      } else {
-        city.inRange = false;
-      }
-    });
-
-    while (citiesPopulation > COVID_DEATHS) {
+    while (citiesPopulation < COVID_DEATHS) {
+      citiesInRange = [];
+      currentRange += RANGE_INCR_AMOUNT;
       citiesPopulation = 0;
 
-      currentRange -= 0.3;
-
-      citiesInRange.forEach(city => {
+      Object.values(CITIES).forEach(city => {
         const cityRelativeLat = Math.abs(MAP_INITIAL_POS.lat - city.lat);
         const cityRelativeLon = Math.abs(MAP_INITIAL_POS.lon - city.lon);
+
+        if (city.population > COVID_DEATHS) {
+          return;
+        }
 
         if (cityRelativeLat > lat - currentRange
             && cityRelativeLat < lat + currentRange
             && cityRelativeLon > lon - currentRange
             && cityRelativeLon < lon + currentRange) {
-          citiesPopulation += city.population;
+          city.inRange = true;
+          citiesInRange.push(city);
         } else {
           city.inRange = false;
-          citiesInRange.delete(city);
         }
       });
+
+      citiesInRange.forEach(city => {
+        citiesPopulation += city.population;
+      });
+    }
+
+    while (citiesPopulation > COVID_DEATHS) {
+      const removedCity = citiesInRange.pop();
+      removedCity.inRange = false;
+
+      citiesPopulation = citiesInRange.reduce((acc, city) => acc + city.population, 0);
     }
 
     setGhostCities(citiesInRange);
