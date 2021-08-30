@@ -12,7 +12,7 @@ import {
   COLOR,
   MARKER_LAT_LON_RADIUS,
   MARKER_SIZE,
-  MAX_DETECTION_THRESHOLD,
+  RANGE_INCR_AMOUNT,
 } from 'constants/map';
 import CITIES from 'data/brazil/data.json';
 
@@ -21,18 +21,30 @@ import styles from 'styles/country.module.css';
 export default function Country() {
   const { t } = useTranslation('country');
   const canvas = useRef();
-  const [mapMultipliers] = useState({
+  const mapMultipliers = useRef({
     lat: MAP_SIZE.height / MAP_MULTIPLIER.lat,
     lon: MAP_SIZE.width / MAP_MULTIPLIER.lon,
   });
   const [screenMultipliers, setScreenMultipliers] = useState({
-    lat: mapMultipliers.lat,
-    lon: mapMultipliers.lon,
+    lat: mapMultipliers.current.lat,
+    lon: mapMultipliers.current.lon,
   });
-  const [ghostCities, setGhostCities] = useState(new Set());
+  const [ghostCities, setGhostCities] = useState([]);
   const [lockedLatLon, setLockedLatLon] = useState(null);
   const [searchValue, setSearchValue] = useState('');
   const totalPopulation = Array.from(ghostCities).reduce((acc, city) => acc + city.population, 0);
+
+  const citiesData = useRef(Object.values(CITIES).map(city => {
+    const relativeLat = Math.abs(MAP_INITIAL_POS.lat - city.lat);
+    const relativeLon = Math.abs(MAP_INITIAL_POS.lon - city.lon);
+
+    return {
+      ...city,
+      inRange: false,
+      relativeLat,
+      relativeLon,
+    };
+  }));
 
   const references = [
     {
@@ -55,45 +67,38 @@ export default function Country() {
   ];
 
   const selectLatLon = (lat, lon) => {
-    const citiesInRange = new Set();
-    let currentRange = MAX_DETECTION_THRESHOLD;
+    let citiesInRange = [];
+    let currentRange = 0;
     let citiesPopulation = 0;
+    let shouldContinue = true;
 
-    Object.values(CITIES).forEach(city => {
-      const cityRelativeLat = Math.abs(MAP_INITIAL_POS.lat - city.lat);
-      const cityRelativeLon = Math.abs(MAP_INITIAL_POS.lon - city.lon);
-
-      if (cityRelativeLat > lat - currentRange
-          && cityRelativeLat < lat + currentRange
-          && cityRelativeLon > lon - currentRange
-          && cityRelativeLon < lon + currentRange) {
-        city.inRange = true;
-
-        citiesInRange.add(city);
-
-        citiesPopulation += city.population;
-      } else {
-        city.inRange = false;
-      }
-    });
-
-    while (citiesPopulation > COVID_DEATHS) {
+    while (shouldContinue) {
+      citiesInRange = [];
       citiesPopulation = 0;
+      currentRange += RANGE_INCR_AMOUNT;
 
-      currentRange -= 0.3;
+      citiesData.current.forEach(city => {
+        if (city.population > COVID_DEATHS) {
+          return;
+        }
 
-      citiesInRange.forEach(city => {
-        const cityRelativeLat = Math.abs(MAP_INITIAL_POS.lat - city.lat);
-        const cityRelativeLon = Math.abs(MAP_INITIAL_POS.lon - city.lon);
+        if (city.relativeLat > lat - currentRange
+            && city.relativeLat < lat + currentRange
+            && city.relativeLon > lon - currentRange
+            && city.relativeLon < lon + currentRange) {
+          if (citiesPopulation + city.population > COVID_DEATHS) {
+            city.inRange = false;
+            shouldContinue = false;
+            return;
+          }
 
-        if (cityRelativeLat > lat - currentRange
-            && cityRelativeLat < lat + currentRange
-            && cityRelativeLon > lon - currentRange
-            && cityRelativeLon < lon + currentRange) {
+          city.inRange = true;
+
+          citiesInRange.push(city);
+
           citiesPopulation += city.population;
         } else {
           city.inRange = false;
-          citiesInRange.delete(city);
         }
       });
     }
@@ -148,7 +153,7 @@ export default function Country() {
     setSearchValue(term);
 
     const normalizedTerm = term.toLowerCase();
-    const possibleMatches = Object.values(CITIES).filter(c => {
+    const possibleMatches = citiesData.current.filter(c => {
       const normalizedName = c.name.toLowerCase();
 
       return normalizedName.includes(normalizedTerm);
@@ -162,11 +167,8 @@ export default function Country() {
     }, null);
 
     if (city) {
-      const relativeLat = Math.abs(MAP_INITIAL_POS.lat - city.lat);
-      const relativeLon = Math.abs(MAP_INITIAL_POS.lon - city.lon);
-
-      selectLatLon(relativeLat, relativeLon);
-      setLockedLatLon([relativeLat, relativeLon]);
+      selectLatLon(city.relativeLat, city.relativeLon);
+      setLockedLatLon([city.relativeLat, city.relativeLon]);
     }
   }, 300);
 
@@ -210,17 +212,17 @@ export default function Country() {
 
       ctx.drawImage(
         img,
-        (lon * mapMultipliers.lon) - (MARKER_SIZE.width / 2),
-        (lat * mapMultipliers.lat) - MARKER_SIZE.height,
+        (lon * mapMultipliers.current.lon) - (MARKER_SIZE.width / 2),
+        (lat * mapMultipliers.current.lat) - MARKER_SIZE.height,
         MARKER_SIZE.width,
         MARKER_SIZE.height,
       );
     };
 
     const drawCities = () => {
-      Object.values(CITIES).forEach(city => {
-        const y = Math.abs(MAP_INITIAL_POS.lat - city.lat) * mapMultipliers.lat;
-        const x = Math.abs(MAP_INITIAL_POS.lon - city.lon) * mapMultipliers.lon;
+      citiesData.current.forEach(city => {
+        const y = city.relativeLat * mapMultipliers.current.lat;
+        const x = city.relativeLon * mapMultipliers.current.lon;
 
         if (city.inRange) {
           ctx.fillStyle = COLOR.inRangeHighlight;
@@ -317,7 +319,7 @@ export default function Country() {
 
                 <datalist id="citiesDatalist">
                   {
-                    Object.values(CITIES).map(city => <option value={city.name} key={city.id} />)
+                    citiesData.current.map(city => <option value={city.name} key={city.id} />)
                   }
                 </datalist>
               </label>
