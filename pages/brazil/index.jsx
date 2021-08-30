@@ -86,7 +86,6 @@ export default function Country() {
             && city.relativeLat < lat + currentRange
             && city.relativeLon > lon - currentRange
             && city.relativeLon < lon + currentRange) {
-
           if (citiesPopulation + city.population > COVID_DEATHS) {
             city.inRange = false;
             shouldContinue = false;
