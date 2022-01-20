@@ -13,4 +13,4 @@ export const MAP_MULTIPLIER = {
   lon: 39.4,
 };
 
-export const COVID_DEATHS = 577605;
+export const COVID_DEATHS = 621927;
